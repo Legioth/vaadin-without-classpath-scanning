@@ -3,4 +3,8 @@
          http://xmlns.jcp.org/xml/ns/javaee/web-app_3_1.xsd"
     version="3.1" metadata-complete="true">
     <absolute-ordering></absolute-ordering>
+
+    <listener>
+        <listener-class>org.vaadin.leif.VaadinInitializer</listener-class>
+    </listener>
 </web-app>
