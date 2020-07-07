@@ -1,30 +1,14 @@
-# Skeleton Starter for Vaadin
+# Vaadin without classpath scanning
 
-This project can be used as a starting point to create your own Vaadin application.
-It has the necessary dependencies and files to help you get started.
+Vaadin uses `ServletContainerInitializer` from the Servlet 3.0 specification to automatically discover various annotated classes from the application's classpath and configure itself accordingly.
+The benefit of `ServletContainerInitializer` is that it allows Vaadin to hook into the classpath scanning that the application server is otherwise also doing to find e.g. `@WebServlet` classes.
+This means that Vaadin can find the classes it needs without any additional scanning overhead compared to what the application server already does.
 
-The best way to use it is via [vaadin.com/start](https://vaadin.com/start) - you can get only the necessary parts and choose the package naming you want to use.
-There is also a [getting started tutorial](https://vaadin.com/tutorials/getting-started-with-flow) based on this project.
+The trouble starts if you want to speed up the classpath scanning performed by the application server.
+Some server implementations can be configured to only look for classes in specific locations while others have less granular configuration alternatives.
 
-To access it directly from github, clone the repository and import the project to the IDE of your choice as a Maven project. You need to have Java 8 or 11 installed.
+This proof of concept shows a way of manually configuring Vaadin for scenarios where classpath scanning is completely disabled. Scanning is disabled by setting the `metadata-comple` attribute to `true` and by defining an empty `<absolute-ordering>` definition in `web.xml`.
 
-Run using `mvn jetty:run` and open [http://localhost:8080](http://localhost:8080) in the browser.
-
-If you want to run your app locally in the production mode, run `mvn jetty:run -Pproduction`.
-
-### Running Integration Tests
-
-Integration tests are implemented using [Vaadin TestBench](https://vaadin.com/testbench). The tests take a few minutes to run and are therefore included in a separate Maven profile. We recommend running tests with a production build to minimize the chance of development time toolchains affecting test stability. To run the tests using Google Chrome, execute
-
-`mvn verify -Pit,production`
-
-and make sure you have a valid TestBench license installed.
-
-Profile `it` adds the following parameters to run integration tests:
-```sh
--Dwebdriver.chrome.driver=path_to_driver
--Dcom.vaadin.testbench.Parameters.runLocally=chrome
-```
-
-For a full Vaadin application example, there are more choices available also from [vaadin.com/start](https://vaadin.com/start) page.
-
+This example uses hardcoded lists of classes and only includes the classes needed for this application to function.
+A more sophisticated approach could use a 3rd party classpath library that can be configured to taste.
+The overall principle of how to integrate with Vaadin would be the same regardless.    
