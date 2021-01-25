@@ -3,10 +3,7 @@ package org.vaadin.leif;
 import java.util.Arrays;
 import java.util.HashSet;
 
-import javax.servlet.ServletContainerInitializer;
-import javax.servlet.ServletContextEvent;
-import javax.servlet.ServletContextListener;
-import javax.servlet.ServletException;
+import javax.servlet.*;
 
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.notification.Notification;
@@ -18,12 +15,15 @@ import com.vaadin.flow.server.startup.DevModeInitializer;
 import com.vaadin.flow.server.startup.ErrorNavigationTargetInitializer;
 import com.vaadin.flow.server.startup.RouteRegistryInitializer;
 import com.vaadin.flow.server.startup.ServletContextListeners;
+import org.springframework.boot.web.servlet.ServletContextInitializer;
+import org.springframework.stereotype.Component;
 
-public class VaadinInitializer implements ServletContextListener {
+@Component
+public class VaadinInitializer implements ServletContextInitializer {
 
     private ServletContextListeners servletContextListeners = new ServletContextListeners();
 
-    @Override
+    //@Override
     public void contextInitialized(ServletContextEvent sce) {
         // Run initializers with relevant classes from the classpath
         runInitializers(sce);
@@ -54,8 +54,13 @@ public class VaadinInitializer implements ServletContextListener {
         }
     }
 
-    @Override
+    //@Override
     public void contextDestroyed(ServletContextEvent sce) {
         servletContextListeners.contextDestroyed(sce);
+    }
+
+    @Override
+    public void onStartup(ServletContext servletContext) throws ServletException {
+        contextInitialized(new ServletContextEvent(servletContext));
     }
 }
