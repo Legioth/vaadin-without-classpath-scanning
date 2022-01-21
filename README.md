@@ -7,8 +7,10 @@ This means that Vaadin can find the classes it needs without any additional scan
 The trouble starts if you want to speed up the classpath scanning performed by the application server.
 Some server implementations can be configured to only look for classes in specific locations while others have less granular configuration alternatives.
 
-This proof of concept shows a way of manually configuring Vaadin for scenarios where classpath scanning is completely disabled. Scanning is disabled by setting the `metadata-comple` attribute to `true` and by defining an empty `<absolute-ordering>` definition in `web.xml`.
+This proof of concept shows a way of manually configuring Vaadin for scenarios where classpath scanning is completely disabled.
+Scanning is disabled by setting the `metadata-complete` attribute to `true` or by defining an empty `<absolute-ordering>` definition in
+`web.xml`, or by application server proprietary means.
 
 This example uses hardcoded lists of classes and only includes the classes needed for this application to function.
 A more sophisticated approach could use a 3rd party classpath library that can be configured to taste.
-The overall principle of how to integrate with Vaadin would be the same regardless.    
+The overall principle of how to integrate with Vaadin would be the same regardless.
