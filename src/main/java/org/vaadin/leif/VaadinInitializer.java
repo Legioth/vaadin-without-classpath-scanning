@@ -12,10 +12,12 @@ import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextField;
+import com.vaadin.flow.di.LookupInitializer;
 import com.vaadin.flow.router.InternalServerError;
 import com.vaadin.flow.router.RouteNotFoundError;
 import com.vaadin.flow.server.startup.DevModeInitializer;
 import com.vaadin.flow.server.startup.ErrorNavigationTargetInitializer;
+import com.vaadin.flow.server.startup.LookupServletContainerInitializer;
 import com.vaadin.flow.server.startup.RouteRegistryInitializer;
 import com.vaadin.flow.server.startup.ServletContextListeners;
 
@@ -36,6 +38,9 @@ public class VaadinInitializer implements ServletContextListener {
         // Anything implementing HasErrorParameter
         runInitializer(new ErrorNavigationTargetInitializer(), sce, RouteNotFoundError.class,
                 InternalServerError.class);
+
+        // Internals used for integrating with either of Spring, CDI or OSGi
+        runInitializer(new LookupServletContainerInitializer(), sce, LookupInitializer.class);
 
         // @Route
         runInitializer(new RouteRegistryInitializer(), sce, MainView.class);
