@@ -3,11 +3,13 @@ package org.vaadin.leif;
 import java.util.Arrays;
 import java.util.HashSet;
 
-import javax.servlet.ServletContainerInitializer;
-import javax.servlet.ServletContextEvent;
-import javax.servlet.ServletContextListener;
-import javax.servlet.ServletException;
+import jakarta.servlet.ServletContainerInitializer;
+import jakarta.servlet.ServletContextEvent;
+import jakarta.servlet.ServletContextListener;
+import jakarta.servlet.ServletException;
 
+import com.vaadin.base.devserver.DevModeHandlerManagerImpl;
+import com.vaadin.base.devserver.startup.DevModeStartupListener;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
@@ -15,7 +17,6 @@ import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.di.LookupInitializer;
 import com.vaadin.flow.router.InternalServerError;
 import com.vaadin.flow.router.RouteNotFoundError;
-import com.vaadin.flow.server.startup.DevModeInitializer;
 import com.vaadin.flow.server.startup.ErrorNavigationTargetInitializer;
 import com.vaadin.flow.server.startup.LookupServletContainerInitializer;
 import com.vaadin.flow.server.startup.RouteRegistryInitializer;
@@ -36,24 +37,27 @@ public class VaadinInitializer implements ServletContextListener {
 
     private static void runInitializers(ServletContextEvent sce) {
         // Anything implementing HasErrorParameter
-        runInitializer(new ErrorNavigationTargetInitializer(), sce, RouteNotFoundError.class,
-                InternalServerError.class);
+        runInitializer(new ErrorNavigationTargetInitializer(), sce,
+                RouteNotFoundError.class, InternalServerError.class);
 
         // Internals used for integrating with either of Spring, CDI or OSGi
-        runInitializer(new LookupServletContainerInitializer(), sce, LookupInitializer.class);
+        runInitializer(new LookupServletContainerInitializer(), sce,
+                LookupInitializer.class, DevModeHandlerManagerImpl.class);
 
         // @Route
         runInitializer(new RouteRegistryInitializer(), sce, MainView.class);
 
         // @NpmPackage, @JsModule, @CssImport, @JavaScript or @Theme
-        runInitializer(new DevModeInitializer(), sce, MainView.class, Button.class, Notification.class,
-                VerticalLayout.class, TextField.class);
+        runInitializer(new DevModeStartupListener(), sce, MainView.class,
+                Button.class, Notification.class, VerticalLayout.class,
+                TextField.class);
     }
 
-    private static void runInitializer(ServletContainerInitializer initializer, ServletContextEvent sce,
-            Class<?>... types) {
+    private static void runInitializer(ServletContainerInitializer initializer,
+            ServletContextEvent sce, Class<?>... types) {
         try {
-            initializer.onStartup(new HashSet<>(Arrays.asList(types)), sce.getServletContext());
+            initializer.onStartup(new HashSet<>(Arrays.asList(types)),
+                    sce.getServletContext());
         } catch (ServletException e) {
             throw new RuntimeException(e);
         }
